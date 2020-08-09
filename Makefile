@@ -2,7 +2,8 @@ CPP = g++
 AR = ar
 CFLAGS = -D__MBED__ -I./include -I./MD_MAX72XX/src -I./MD_Parola/src
 
-bin: bin/helloworld bin/display bin/ambulance bin/customchars
+bin: bin/helloworld bin/display bin/ambulance bin/customchars bin/zone_display bin/watch
+
 
 SRC_MAX72XX = $(wildcard ./MD_MAX72XX/src/*.cpp)
 SRC_PAROLA = $(wildcard ./MD_Parola/src/*.cpp)
@@ -28,6 +29,7 @@ obj/%.o: ./MD_Parola/src/%.cpp
 	$(CPP) $(CFLAGS) -c $< -o $@
 
 
+
 obj/Parola_HelloWorld.o: ./examples/Parola_HelloWorld/Parola_HelloWorld.ino
 	$(CPP) -c -o $@ -x c++ $< $(CFLAGS)
 bin/helloworld: obj/Parola_HelloWorld.o obj/main.o lib/libParola.a lib/libMax72xx.a
@@ -46,6 +48,16 @@ bin/ambulance: obj/Parola_Ambulance.o obj/main.o lib/libParola.a lib/libMax72xx.
 obj/Parola_CustomChars.o: ./examples/Parola_CustomChars/Parola_CustomChars.ino
 	$(CPP) -c -o $@ -x c++ $< $(CFLAGS)
 bin/customchars: obj/Parola_CustomChars.o obj/main.o lib/libParola.a lib/libMax72xx.a
+	$(CPP) $^ -o $@ $(CFLAGS) -L./lib -lParola -lMax72xx
+
+obj/Parola_Zone_Display.o: ./examples/Parola_Zone_Display/Parola_Zone_Display.ino
+	$(CPP) -c -o $@ -x c++ $< $(CFLAGS)
+bin/zone_display: obj/Parola_Zone_Display.o obj/main.o lib/libParola.a lib/libMax72xx.a
+	$(CPP) $^ -o $@ $(CFLAGS) -L./lib -lParola -lMax72xx
+
+obj/watch.o: ./examples/watch/watch.ino
+	$(CPP) -c -o $@ -x c++ $< $(CFLAGS)
+bin/watch: obj/watch.o obj/main.o lib/libParola.a lib/libMax72xx.a
 	$(CPP) $^ -o $@ $(CFLAGS) -L./lib -lParola -lMax72xx
 
 clean :
